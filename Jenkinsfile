@@ -19,7 +19,9 @@ pipeline {
                 echo '========================================='
                 echo '                COMPILE '
                 echo '========================================='
-                 sh 'mvn clean compile -e'
+                withMaven(maven: 'mvn') {
+                    sh 'mvn clean compile -e'
+                }
             }
         }
         stage ('Test') {
