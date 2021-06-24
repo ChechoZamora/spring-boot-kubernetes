@@ -29,7 +29,10 @@ pipeline {
                 echo '========================================='
                 echo '                TEST '
                 echo '========================================='
-                 sh 'mvn clean test -e'
+                 
+                withMaven(maven: 'mvn') {
+                    sh 'mvn clean test -e'
+                }
             }
         }
 
