@@ -19,9 +19,6 @@ pipeline {
                 echo '========================================='
                 echo '                COMPILE '
                 echo '========================================='
-                withMaven(maven: 'mvn') {
-                    sh 'mvn clean compile -e'
-                }
             }
         }
         stage ('Test') {
@@ -30,9 +27,6 @@ pipeline {
                 echo '                TEST '
                 echo '========================================='
                  
-                withMaven(maven: 'mvn') {
-                    sh 'mvn clean test -e'
-                }
             }
         }
 
@@ -41,12 +35,6 @@ pipeline {
                echo '========================================='
               echo '                SONARQUBE '
               echo '========================================='
-                script {
-                    def scannerHome = tool 'SonarQube Scanner';//def scannerHome = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('Sonar Server') {
-                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Ms-Maven -Dsonar.sources=target/ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=14c09fa032024d6f0e5923c7cead79f0bcaa23f3"
-                    }
-                }
            }
         }
     }
