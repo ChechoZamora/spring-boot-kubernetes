@@ -1,13 +1,13 @@
 pipeline {
     agent any
 
-    tools {
+   tools {
         maven 'Maven'
-        nodejs "NodeJs"
     }
-
+    
     stages {
-      stage ('Initial') {
+     
+        stage ('Initial') {
             steps {
               echo '========================================='
               echo '                INITIAL '
@@ -31,23 +31,32 @@ pipeline {
                 echo '========================================='
                 echo '                TEST '
                 echo '========================================='
-                 sh 'mvn clean test -e'
+                sh 'mvn clean test -e'
             }
         }
 
-        stage('SonarQube analysis') {
+        stage ('OWASP Dependency-Check Vulnerabilities') {  
+            steps {  
+                echo '========================================='
+                echo '                DEPENDENCY-CHECK '
+                echo '========================================='
+                sh 'mvn dependency-check:check' 
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'  
+            }  
+        }  
+        
+        stage('SonarQube analysis - SAST') {
            steps{
                echo '========================================='
               echo '                SONARQUBE '
               echo '========================================='
                 script {
-                    def scannerHome = tool 'SonarQube Scanner';//def scannerHome = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('Sonar Server') {
-                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=Ms-Maven -Dsonar.sources=target/ -Dsonar.host.url=http://172.18.0.3:9000 -Dsonar.login=14c09fa032024d6f0e5923c7cead79f0bcaa23f3"
+                    def scannerHome = tool 'sonar-scanner';
+                    withSonarQubeEnv('SonarQube') {
+                      sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=tarea4-devsecops -Dsonar.sources=target/ -Dsonar.host.url=http://192.168.8.112:9000 -Dsonar.login=220d8b11c0d69a6137dae715e362b72d711a2a9e"
                     }
                 }
            }
         }
     }
 }
-
